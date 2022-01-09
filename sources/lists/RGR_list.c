@@ -413,3 +413,34 @@ Node* removeNodeAt(Node* pHead, Node** ppNode, int index){
     return pOut;
 }
 
+// Get nb occurences in the list
+// this function needs a call back function for comparison
+int getNbOccur(Node* pHead, void* pData, compareCallBack ccb){
+    // Variables
+    int   error  = ERR_GET_NB_OCCUR;
+    void* pData2 = NULL;
+    int   count  = 0;
+    // check parameters
+    if(pHead==NULL){
+        return 0;
+    }
+    if(pData==NULL || ccb==NULL){
+        error |= ERR_LNULL;
+        error |= ERR_LPARAM;
+        exit(error);
+    }
+    // Browse the list and call the compare function
+    while(pHead!=NULL){
+        pData2 = pHead->pData;
+        if( ccb(pData, pData2)==0 ){
+            count++;
+        }
+        pHead = pHead->pNext;
+    }
+    // return result
+    return count;
+}
+    
+
+
+

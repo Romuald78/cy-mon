@@ -2,18 +2,19 @@
     #define RGR_LIST_H
 
     // Constants
-    #define ERR_DATA    0x0001
-    #define ERR_NODE    0x0002
-    #define ERR_LIST    0x0004
-    #define ERR_HEAD    0x0008
-    #define ERR_TAIL    0x0010
-    #define ERR_AT      0x0020
-    #define ERR_CREATE  0x0040
-    #define ERR_FREE    0x0080
-    #define ERR_REMOVE  0x0100
-    #define ERR_INSERT  0x0200       
-    #define ERR_DISPLAY 0x0400
-    #define ERR_GET     0x0800
+    #define ERR_DATA            0x0001
+    #define ERR_NODE            0x0002
+    #define ERR_LIST            0x0004
+    #define ERR_HEAD            0x0008
+    #define ERR_TAIL            0x0010
+    #define ERR_AT              0x0020
+    #define ERR_CREATE          0x0040
+    #define ERR_FREE            0x0080
+    #define ERR_REMOVE          0x0100
+    #define ERR_INSERT          0x0200       
+    #define ERR_DISPLAY         0x0400
+    #define ERR_GET             0x0800
+    #define ERR_GET_NB_OCCUR    0x1000
 
     #define ERR_LNULL    0x0001
     #define ERR_LMALLOC  0x0002
@@ -41,7 +42,8 @@
 
     // Callback (for display data)
     typedef void (*displayCallback)(Node* pNode);
-    
+    typedef int  (*compareCallBack)(void* pData1, void* pData2);
+        
     // FUNCTIONs    
     Node* createNode(void* pData);
     void  freeNode  (Node* pNode, int freeData); 
@@ -64,6 +66,8 @@
     Node* removeNodeHead(Node* pHead, Node** ppNode);
     Node* removeNodeTail(Node* pHead, Node** ppNode);
     Node* removeNodeAt  (Node* pHead, Node** ppNode, int index);
+
+    int   getNbOccur(Node* pHead, void* pData, compareCallBack ccb);    
 
 #endif
 

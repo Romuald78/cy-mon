@@ -60,28 +60,34 @@ void _initMap(Map* pMap){
     
 }
 
-int _getIndex(int x, int y, int W){
-    return x + y*W;
-}
-
 //-------------------------------------------------
 // API functions
 //-------------------------------------------------
 
-CellType readMap(Map* pMap, int x, int y){
+CellType readMap(void* pMp, int absX, int absY, int scrX, int scrY, int* pRGB, int* pRGB2){
+    // Variables
+    Map*     pMap = NULL;
+    CellType ct   = NONE;
     // check parameters
-    if(pMap == NULL){
+    if(pMp == NULL){
         RAGE_QUIT("Bad map pointer !");
     }
+    pMap = (Map*)pMp;
     if(pMap->grid == NULL){
         RAGE_QUIT("Bad grid pointer !");
     }
-    if(x<0 || y <0 || x>=pMap->W || y>=pMap->H){
+    if(absX<0 || absY <0 || absX>=pMap->W || absY>=pMap->H){
         RAGE_QUIT("Bad parameter dimensions !");
     }    
-    // Get value and return 
-    int index = _getIndex( x, y, pMap->W);
-    return pMap->grid[index];
+    // Get value and return (do not look at screen coords, but only absolute coords)
+    int index = getIndex( absX, absY, pMap->W);
+    ct = pMap->grid[index];
+    // Clear background if no cell type
+    if(pRGB2!=NULL){
+        *pRGB2 = DEFAULT_BACK_COLOR; 
+    }
+    // return result
+    return ct;
 }
 
 void writeMap(Map* pMap, int x, int y, CellType ct){
@@ -96,7 +102,7 @@ void writeMap(Map* pMap, int x, int y, CellType ct){
         RAGE_QUIT("Bad parameter dimensions !");
     }    
     // Get value and write 
-    int index = _getIndex(x, y, pMap->W);
+    int index = getIndex(x, y, pMap->W);
     pMap->grid[index] = ct;
 }
 

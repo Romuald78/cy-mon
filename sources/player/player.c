@@ -8,11 +8,12 @@ void initPlayer(Player* p, float x, float y, float speed, char* disp){
         RAGE_QUIT("Bad player pointer !");
     }
     // Fill structure    
-    p->x       = x;
-    p->y       = y;
-    p->speed   = speed;
-    p->display = disp;
-    p->move    = MOVES_NONE;
+    p->x         = x;
+    p->y         = y;
+    p->speed     = speed;
+    p->display   = disp;
+    p->move      = MOVES_NONE;
+    p->pickingUp = 0;
 }
 
 // pMoveLimit is a limitation of the allowed movement

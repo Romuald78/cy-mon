@@ -12,6 +12,7 @@
         float speed;
         char* display;
         int   move;
+        int   pickingUp;    // player trying to pick up an object. Set on event. Reset after update.
     } Player;
     
     // functions

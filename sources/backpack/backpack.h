@@ -21,6 +21,7 @@
     int      isFull      (Backpack* pBk);
     int      addItem     (Backpack* pBk, CellType ct);
     CellType removeItem  (Backpack* pBk, int index  );
-
+    int      getItemCount(Backpack* pBk, CellType ctItem);
+    int      compareItems(void* pData1, void* pData2);
     
 #endif

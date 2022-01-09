@@ -5,6 +5,7 @@
     #include "camera.h"
     #include "player.h"
     #include "backpack.h"
+    #include "menus.h"
 
 
     // --------------------------------
@@ -15,6 +16,7 @@
         Camera   cam;
         Player   player;
         Backpack backpack;
+        Menu     itemMenu;
     } UserData;
 
 
@@ -26,5 +28,7 @@
     int  update(void* pUserData, Pencil* pPencil, double deltaTime);
     void draw  (void* pUserData, Pencil* pPencil);
     void finish(void* pUserData);
+    
+
     
 #endif

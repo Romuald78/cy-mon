@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "camera.h"
 #include "moves.h"
 
@@ -19,6 +21,26 @@ void initCamera  (Camera* pCam, int x, int y, int w, int h, float speed){
     pCam->H = h;
     pCam->speed = speed;
     pCam->manualMove = MOVES_NONE;
+    pCam->pLayerList = NULL;
+}
+
+void addLayer(Camera* pCam, GenericRead callback, void* data){
+    // Variables
+    Layer* pLayer = NULL;
+    // check parameters
+    if(pCam==NULL || callback==NULL || data==NULL){
+        RAGE_QUIT("Camera add layer NULL parameters !");
+    }
+    // Create layer structure (alloc)
+    pLayer = malloc( sizeof(Layer) );
+    if(pLayer==NULL){
+        RAGE_QUIT("Camera layer MALLOC failed !");
+    }
+    // Fill layer struct
+    pLayer->callback = callback;
+    pLayer->data     = data;
+    // Add this data into the linked list
+    pCam->pLayerList = insertDataTail(pCam->pLayerList, pLayer);
 }
 
 void setCameraTo(Camera* pCam, float x, float y){
@@ -51,7 +73,6 @@ void moveCameraTo(Camera* pCam, float x, float y){
     pCam->destX = (int)x;
     pCam->destY = (int)y;
 }
-
 
 void updateCamera(Camera* pCam, float deltaTime){
     int dirX = 0;
@@ -102,5 +123,40 @@ void saturateCamera(Camera* pCam, int x0, int y0, int x1, int y1){
     }
 }
 
+// this function gets values from all the layers (from bottom/0 to top/N-1)
+// the cell type is returned directly. This is the upper layer with a visible cell. 
+CellType getLayerCell(Camera* pCam, int absX, int absY, int scrX, int scrY, int* pRGB, int* pRGB2){
+    // Variables
+    CellType ct    = NONE;
+    CellType ctOld = NONE;
+    Node*    pNode = NULL;
+    // check parameters
+    if(pCam==NULL){
+        RAGE_QUIT("Camera NULL parameters !");
+    }
+    // For all layers
+    pNode = pCam->pLayerList;
+    while(pNode != NULL){
+        Layer* pLayer = (Layer*)(pNode->pData);
+        if(pLayer==NULL){
+            RAGE_QUIT("Camera layer list NULL pointer !");            
+        }
+        if(pLayer->callback==NULL){
+            RAGE_QUIT("Camera layer callback is NULL !");
+        }
+        if(pLayer->data==NULL){
+            RAGE_QUIT("Camera layer data is NULL !");
+        }
+        // Read the layer
+        ct = pLayer->callback(pLayer->data, absX, absY, scrX, scrY, pRGB, pRGB2);
+        if (ct != NONE){
+            ctOld = ct;
+        }
+        // Go to next layer
+        pNode = pNode->pNext;
+    }
+    // Return merged cell value
+    return ctOld;
+}
 
 

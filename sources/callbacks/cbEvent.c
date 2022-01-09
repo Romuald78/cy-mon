@@ -38,11 +38,9 @@ void event(void* pUserData, Event* pEv){
                 pDat->player.move &= (~camo);
             }
         }
-        
-        if(code==KEY_SPACE && value==0x01){
-            int x = rand()%(pDat->map.W-pDat->cam.W);
-            int y = rand()%(pDat->map.H-pDat->cam.H);
-            moveCameraTo( &(pDat->cam), x, y);
+        // On key space released        
+        if(code==KEY_SPACE && value==0x00){
+            pDat->player.pickingUp = 1;
         }
     }
 
