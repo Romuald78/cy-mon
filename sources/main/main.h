@@ -4,15 +4,19 @@
     #include "map.h"
     #include "camera.h"
     #include "player.h"
+    #include "backpack.h"
+
 
     // --------------------------------
     // USER DATA STRUCTURE
     // --------------------------------
     typedef struct{
-        Map    map;
-        Camera cam;
-        Player player;
+        Map      map;
+        Camera   cam;
+        Player   player;
+        Backpack backpack;
     } UserData;
+
 
     // --------------------------------
     // GAME CALLBACKS
@@ -23,5 +27,4 @@
     void draw  (void* pUserData, Pencil* pPencil);
     void finish(void* pUserData);
     
-
 #endif

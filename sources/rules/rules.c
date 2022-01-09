@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "errors.h"
-#include "player.h"
-#include "moves.h"
-#include "map.h"
+#include "rules.h"
 
+int canPickUp(CellType itemType){
+    return ( (itemType>=START_PICK_UP) && (itemType<=END_PICK_UP) );
+}
 
 Moves playerCanMove(Player* pPlayer, Map* pMap, float deltaTime){
     CellType ctx;
@@ -15,7 +15,7 @@ Moves playerCanMove(Player* pPlayer, Map* pMap, float deltaTime){
     Moves movesRes = MOVES_NONE; 
     // check parameters
     if(pPlayer==NULL || pMap==NULL){
-        RAGE_QUIT("Player move NULL parameters");        
+        RAGE_QUIT("Rules player move NULL parameters");        
     }
     // Store result equal to player requested movement
     movesRes = pPlayer->move;
@@ -45,5 +45,29 @@ Moves playerCanMove(Player* pPlayer, Map* pMap, float deltaTime){
     // Return the remaining allowed movements
     return movesRes;
 }
+
+void pickUpItem(Player* pPlayer, Map* pMap, Backpack* pBk){
+    // Variables
+    int x;
+    int y;
+    CellType itemType;
+    // check parameters
+    if(pPlayer==NULL || pMap==NULL ||pBk==NULL){
+        RAGE_QUIT("Rules pickup item NULL parameters");        
+    }
+    // Check if the grid under the player position contains an item
+    x = (int)(pPlayer->x);
+    y = (int)(pPlayer->y);
+    itemType = readMap(pMap, x, y);
+    // Check if item can be put into the backpack
+    if( canPickUp(itemType) ){
+        // Put item in backpack (if enough remaining space)
+        if( addItem(pBk, itemType) ){
+            // Remove item from map
+            writeMap(pMap, x, y, GRASS);
+        } 
+    }       
+}
+
 
 

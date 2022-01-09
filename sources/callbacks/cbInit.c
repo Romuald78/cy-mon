@@ -29,6 +29,9 @@ void init(void* pUserData, Pencil* pPencil){
     
     // Init player
     initPlayer( &(pDat->player), mapW/2.0, mapH/2.0, PLAYER_INIT_SPEED, EMOT_RABBIT);
+
+    // Init backpack
+    initBackpack( &(pDat->backpack), MAX_NB_ITEMS );
     
     // Create an axe on the map
     writeMap(&(pDat->map), (mapW/2)-5, (mapH/2)+2, AXE);        

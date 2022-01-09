@@ -6,13 +6,26 @@
     typedef enum {
         // default empty cell
         GRASS=0,
-        // non blocking decor cells 
-        HERB, CLOVER, TULIP, HIBISCUS, FLOWER, ROSE, SUNFLOWER,
+
+        // non blocking decor cells (that can be picked up)
+        START_PICK_UP,
+        //------------------------------------------
+        HERB        = START_PICK_UP,
+        CLOVER,
+        TULIP,
+        HIBISCUS,
+        FLOWER,
+        ROSE,
+        SUNFLOWER,
+        // Tools
+        AXE,
+        //------------------------------------------
+        END_PICK_UP = AXE,
+
         // Blocking cells
         ROCK,       
         TREE, PINE,
-        // Tools
-        AXE,
+
         // Total number of cell types
         NB_CELL_TYPES,
 

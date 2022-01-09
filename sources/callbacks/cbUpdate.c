@@ -21,6 +21,9 @@ int update(void* pUserData, Pencil* pPencil, double deltaTime){
     moveRes = playerCanMove(&(pDat->player), &(pDat->map), deltaTime);
     // Update player position
     updatePlayer( &(pDat->player), deltaTime, &moveRes);        
+    // Check if there is an item under the player feet : take it
+    pickUpItem( &(pDat->player), &(pDat->map), &(pDat->backpack) );
+    
     // Set camera center to player position
     camX = pDat->player.x - (pPencil->width /2);
     camY = pDat->player.y - (pPencil->height/2);
