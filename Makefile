@@ -1,70 +1,75 @@
 #-----------------------------------------
 # VARIABLES
 #-----------------------------------------
-LIBDIR = ../libRGR/
-SRCDIR = ./src/
-INCDIR = ./inc/
-BUILDIR= ./build/
-OBJDIR = $(BUILDIR)obj/
-BINDIR = $(BUILDIR)bin/
-EXEC   = main
+CC      = gcc
+LIBDIR  = ../libRGR/
+LIBS    = -lGameRGR -lm 
+BUILDIR = build/
+SRCDIR  = sources/
+OBJDIR  = $(BUILDIR)obj/
+BINDIR  = $(BUILDIR)bin/
 
-SRC  = $(wildcard $(SRCDIR)*.c)
-INC  = $(wildcard $(INCDIR)*.h)
-OBJ  = $(subst $(SRCDIR),$(OBJDIR),$(SRC))
-OBJ := $(OBJ:.c=.o)
+EXEC    = $(BINDIR)main
+INC     = $(sort $(wildcard sources/*/*.h))
+SRC     = $(sort $(wildcard sources/*/*.c))
+OBJ    := $(subst $(SRCDIR),$(OBJDIR),$(SRC:.c=.o))
+INCLUDE = $(addprefix -I, $(dir $(INC)))
+INCLUDE:= -I. $(INCLUDE)
 
 #-----------------------------------------
 # DEFAULT
 #-----------------------------------------
-all    : $(OBJDIR) $(BINDIR) $(BINDIR)$(EXEC)
+all : $(EXEC)
 
 #-----------------------------------------
 # OBJECTS
 #-----------------------------------------
-$(OBJDIR)%.o : $(SRCDIR)%.c $(INC) $(LIBDIR)libGameRGR.a $(LIBDIR)emoticons.h
-	gcc -I. -c $< -o $@
+$(OBJDIR)%.o : $(SRCDIR)%.c $(INC)
+	@echo "Creating object [$@]..."
+	@mkdir -p $(dir $@)
+	@$(CC) $(INCLUDE) -c $< -o $@
+#	@echo "\n"
 
 #-----------------------------------------
 # MAIN
 #-----------------------------------------
-$(BINDIR)$(EXEC) : $(OBJ)
-	@echo "Regenerating [$@]..."
-	gcc $^ -o $@ -L$(LIBDIR) -lGameRGR -lm
-
+$(EXEC) : $(OBJ)
+	@echo "Creating executable [$@]..."
+	@mkdir -p $(dir $@)
+	@$(CC) $^ -o $@ -L$(LIBDIR) $(LIBS)
+    
 #-----------------------------------------
 # CLEAN
 #-----------------------------------------
 # clean all
-.PHONY : clean
-clean  : cleanObj cleanBin
-	rm -r -f $(BUILDIR)
+clean  : 
+	@echo "Removing all output directories..."
+	@rm -r -f $(BUILDIR)
 
 # clean anything but bin
-.PHONY : cleanObj
-cleanObj  :
-	rm -f $(OBJDIR)*.o
-	rm -r -f $(OBJDIR)
-	# remove logs
-	rm -f *.log
+cleanObj :
+	@echo "Removing object directory..."
+	@rm -r -f $(OBJDIR)
+	@rm -f *.log
 
 # clean bin only
-.PHONY : cleanBin
-cleanBin  :	
-	rm -f $(BINDIR)$(EXEC)
-	rm -r -f $(BINDIR)
-
-#-----------------------------------------
-# PREPARE folders
-#-----------------------------------------
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-$(BINDIR):
-	mkdir -p $(BINDIR)
+cleanBin :
+	@echo "Removing executable directory..."
+	@rm -r -f $(BINDIR)
 
 #-----------------------------------------
 # REBUILD
 #-----------------------------------------
 .PHONY  : rebuild
-rebuild : clean $(OBJDIR) $(BINDIR) $(BINDIR)$(EXEC)
+rebuild : clean $(EXEC)
+
+#-----------------------------------------
+# DEBUG
+#-----------------------------------------
+debug :
+	clear
+	@echo "SRC=\n$(SRC) \n"
+	@echo "INC=\n$(INC) \n"
+	@echo "OBJ=\n$(OBJ) \n"
+	@echo "INCLUDE=\n$(INCLUDE) \n"
 
