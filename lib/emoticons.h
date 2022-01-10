@@ -81,6 +81,8 @@
     #define EMOT_WRENCH      "\xF0\x9F\x94\xA7"
     #define EMOT_HAMMER      "\xF0\x9F\x94\xA8"
     #define EMOT_AXE         "\U0001FA93"
+    #define EMOT_TOOLBOX     "\U0001F9F0"
+    #define EMOT_MAGNET      "\U0001F9F2"
     // Furnitures
     #define EMOT_COMPUTER    "\xF0\x9F\x92\xBB"
     // Miscellaneous items

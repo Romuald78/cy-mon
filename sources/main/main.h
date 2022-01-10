@@ -1,3 +1,9 @@
+// TODO
+// add a way to get any data using GenericRead callbacks (pDat pointer could be the solution)
+// add a way to get system time for the game (may be using getTimeMs function from the API : to check)
+// this way we could add some blinking operations or anything related to time
+
+
 #ifndef GAME_H
     #define GAME_H
     #include "errors.h"
@@ -17,6 +23,7 @@
         Player   player;
         Backpack backpack;
         Menu     itemMenu;
+        char*    celltypes[NB_CELL_TYPES]; 
     } UserData;
 
 

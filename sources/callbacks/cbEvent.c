@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../libRGR/game_rgr.h"
-#include "../libRGR/emoticons.h"
+#include "lib/game_rgr.h"
+#include "lib/emoticons.h"
 #include "main.h"
 #include "moves.h"
 
@@ -17,6 +17,7 @@ void event(void* pUserData, Event* pEv){
     int value = pEv->value;
 
     if(type == EV_KEY){
+        // Moving player with arrow keys
         Moves camo = MOVES_NONE;
         if(code==KEY_LEFT){
             camo |= MOVES_LEFT;
@@ -38,7 +39,11 @@ void event(void* pUserData, Event* pEv){
                 pDat->player.move &= (~camo);
             }
         }
-        // On key space released        
+        // Toggle item menu view
+        if(code==KEY_I && value==0x01){
+            toggleLayer( &(pDat->cam), 1);
+        }        
+        // Item pickup
         if(code==KEY_SPACE && value==0x00){
             pDat->player.pickingUp = 1;
         }

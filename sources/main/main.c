@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include "../libRGR/game_rgr.h"
-#include "../libRGR/emoticons.h"
+#include "lib/game_rgr.h"
+#include "lib/emoticons.h"
 #include "main.h"
 
 int main(int argc, char** argv){

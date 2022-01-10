@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../libRGR/game_rgr.h"
-#include "../libRGR/emoticons.h"
+#include "lib/game_rgr.h"
+#include "lib/emoticons.h"
 #include "main.h"
 
 void finish(void* pUserData){

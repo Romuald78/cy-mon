@@ -1,20 +1,20 @@
 #-----------------------------------------
 # VARIABLES
 #-----------------------------------------
-CC      = gcc
-LIBDIR  = ../libRGR/
-LIBS    = -lGameRGR -lm 
-BUILDIR = build/
-SRCDIR  = sources/
-OBJDIR  = $(BUILDIR)obj/
-BINDIR  = $(BUILDIR)bin/
+CC       = gcc
+LIBDIR   = lib/
+LIBS     = -lGameRGR -lm 
+BUILDIR  = build/
+SRCDIR   = sources/
+OBJDIR   = $(BUILDIR)obj/
+BINDIR   = $(BUILDIR)bin/
 
-EXEC    = $(BINDIR)main
-INC     = $(sort $(wildcard sources/*/*.h))
-SRC     = $(sort $(wildcard sources/*/*.c))
-OBJ    := $(subst $(SRCDIR),$(OBJDIR),$(SRC:.c=.o))
-INCLUDE = $(addprefix -I, $(dir $(INC)))
-INCLUDE:= -I. $(INCLUDE)
+EXEC     = $(BINDIR)main
+INC      = $(sort $(wildcard sources/*/*.h))
+SRC      = $(sort $(wildcard sources/*/*.c))
+OBJ     := $(subst $(SRCDIR),$(OBJDIR),$(SRC:.c=.o))
+INCLUDE  = $(addprefix -I, $(dir $(INC)))
+INCLUDE := -I. $(INCLUDE)
 
 #-----------------------------------------
 # DEFAULT

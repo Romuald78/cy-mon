@@ -1,19 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
-#include "../libRGR/game_rgr.h"
-#include "../libRGR/emoticons.h"
+#include "lib/game_rgr.h"
+#include "lib/emoticons.h"
 #include "main.h"
 
 
 void draw(void* pUserData, Pencil* pPencil){
     // Variables
-    int X2;
-    int Y2;
-    int fontRGB = 0;
-    int backRGB = 0;
-    int lastBackRGB = 0;
-    int lastFontRGB = 0;
+    int  X2;
+    int  Y2;
+    int  fontRGB = 0;
+    int  backRGB = 0;
+    int  lastBackRGB = 0;
+    int  lastFontRGB = 0;
+    char charOut[8];
     // Cast the user data correctly 
     UserData* pDat = (UserData*)pUserData;
     if(!pDat ||!pPencil){
@@ -37,7 +39,9 @@ void draw(void* pUserData, Pencil* pPencil){
             // check if this cell is visible
             if(X2>=0 && Y2>=0 && X2<pDat->map.W && Y2<pDat->map.H){
                 // read cell type from ALL the layers
-                CellType ct = getLayerCell(&(pDat->cam), X2, Y2, x, y, &fontRGB, &backRGB);
+                charOut[0] = '\0';
+                CellType ct = getLayerCell( &(pDat->cam), charOut, X2, Y2, x, y, &fontRGB, &backRGB );
+                
                 // Keep only the display value
                 ct = ct & (~BLOCKING);
                 // Change background color if not the previous one
@@ -51,14 +55,18 @@ void draw(void* pUserData, Pencil* pPencil){
                     lastFontRGB = fontRGB;                
                 }
                 // Check if the current cell is the player position
-                // TODO : this will create a display issue when using a window over the map
                 if( X2==(int)(pDat->player.x) && Y2==(int)(pDat->player.y) ){
                     // Display PLAYER
                     displayChar(pPencil, pDat->player.display);
                 }
                 else{
-                    // Display the result of the map
-                    displayChar(pPencil, pDat->map.celltypes[ct]);
+                    // Display the result of the map (either raw text or emoticon)
+                    if(strlen(charOut)>0 && ct==RAW_TEXT){
+                        displayChar(pPencil, charOut);
+                    }
+                    else{
+                        displayChar(pPencil, pDat->celltypes[ct]);
+                    }
                 }
             }
             else{

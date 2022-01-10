@@ -39,6 +39,7 @@ void addLayer(Camera* pCam, GenericRead callback, void* data){
     // Fill layer struct
     pLayer->callback = callback;
     pLayer->data     = data;
+    pLayer->hidden   = 0;
     // Add this data into the linked list
     pCam->pLayerList = insertDataTail(pCam->pLayerList, pLayer);
 }
@@ -124,8 +125,9 @@ void saturateCamera(Camera* pCam, int x0, int y0, int x1, int y1){
 }
 
 // this function gets values from all the layers (from bottom/0 to top/N-1)
-// the cell type is returned directly. This is the upper layer with a visible cell. 
-CellType getLayerCell(Camera* pCam, int absX, int absY, int scrX, int scrY, int* pRGB, int* pRGB2){
+// the cell type is returned directly. This is the upper layer with a visible cell.
+// the pOut buffer is there for specific strings to display like text
+CellType getLayerCell(Camera* pCam, char* pOut, int absX, int absY, int scrX, int scrY, int* pRGB, int* pRGB2){
     // Variables
     CellType ct    = NONE;
     CellType ctOld = NONE;
@@ -133,6 +135,10 @@ CellType getLayerCell(Camera* pCam, int absX, int absY, int scrX, int scrY, int*
     // check parameters
     if(pCam==NULL){
         RAGE_QUIT("Camera NULL parameters !");
+    }
+    // Set output string
+    if(pOut!=NULL){
+        pOut[0] = '\0';
     }
     // For all layers
     pNode = pCam->pLayerList;
@@ -147,8 +153,11 @@ CellType getLayerCell(Camera* pCam, int absX, int absY, int scrX, int scrY, int*
         if(pLayer->data==NULL){
             RAGE_QUIT("Camera layer data is NULL !");
         }
-        // Read the layer
-        ct = pLayer->callback(pLayer->data, absX, absY, scrX, scrY, pRGB, pRGB2);
+        // Read the layer (if it's visible)
+        ct = NONE;
+        if(pLayer->hidden==0){
+            ct = pLayer->callback(pLayer->data, pOut, absX, absY, scrX, scrY, pRGB, pRGB2);
+        }
         if (ct != NONE){
             ctOld = ct;
         }
@@ -159,4 +168,35 @@ CellType getLayerCell(Camera* pCam, int absX, int absY, int scrX, int scrY, int*
     return ctOld;
 }
 
+// hidden is 0 or 1
+// if another value, means toggle value
+void _layerVisibility(Camera* pCam, int index, int hidden){
+    // Check parameters
+    if(pCam==NULL){
+        RAGE_QUIT("Camera layer pointer is NULL !");
+    }
+    if(index<0){
+        RAGE_QUIT("Layer index is negative !");
+    }
+    // set item menu hidden 
+    Layer* pLayer = getDataAt(pCam->pLayerList, index);
+    if(hidden &0xFE){
+        pLayer->hidden ^= 0x01;
+    }
+    else{
+        pLayer->hidden = hidden;
+    }    
+}
+
+void hideLayer(Camera* pCam, int index){
+    _layerVisibility(pCam, index, 1);
+}
+
+void showLayer(Camera* pCam, int index){
+    _layerVisibility(pCam, index, 0);
+}
+
+void toggleLayer(Camera* pCam, int index){
+    _layerVisibility(pCam, index, 2);
+}
 
