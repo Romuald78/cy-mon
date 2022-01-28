@@ -20,13 +20,13 @@ all : $(EXEC)
 # -----------------------------
 # Objects
 # -----------------------------
-%.o : %.c errors.h $(APIDIR)/lib$(LIB).h
+%.o : %.c $(APIDIR)/lib$(LIB).h
 	$(CC) -c -fPIC -I$(OUTDIR)/includes -Iinclude $< -o $@    
 
 # -----------------------------
 # Shared Library
 # -----------------------------
-lib$(LIB).so: lib$(LIB).o errors.o 
+lib$(LIB).so: lib$(LIB).o  
 	$(CC) -shared $^ -o $(LIBDIR)/$@
 	
 # -----------------------------
