@@ -39,6 +39,7 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
     if(pGfx==NULL){
         rageQuit(1002, "DRAW : GFX pointer is NULL !");
     }
+/*
     // Loop through the grid cells
     double t = ((UserData*)pUserData)->time/2;
     srand(0);
@@ -103,7 +104,7 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
         }
     }
 
-
+//*/
     
 /* -----------------------------------------------------------------------------------
 

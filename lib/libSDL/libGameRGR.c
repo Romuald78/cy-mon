@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "libGameRGR.h"
+#include "SDL.h"
+#include "SDL_ttf.h"
+
 
 void rageQuit(int errorCode, const char* format, ...){
     // List of arguments
@@ -110,10 +113,11 @@ GameData* _newGame(GFX* pGfx, Callbacks* pCb, void* pUserData, int displayFPS){
                      "pGfx       =%p\n"
                      "pCallbacks =%p\n"
                      "pUserData  =%p\n"
-                     "pCanvas    =%p", pGfx, pCb, pUSerData);        
+                     "pCanvas    =%p", pGfx, pCb, pUserData);        
     }
     // Memory Allocation
-    pGame = malloc(sizeof(GameData)){
+    pGame = malloc(sizeof(GameData));
+    if(pGame==NULL){
         rageQuit(45, "GameData allocation failed !");
     }
     // Fill structure
@@ -126,23 +130,90 @@ GameData* _newGame(GFX* pGfx, Callbacks* pCb, void* pUserData, int displayFPS){
 
 GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUserData, Callbacks* pCb){    
     // Variables
-    Canvas*   pCanvas;
-    GFX*      pGfx;
-    GameData* pGame;
-    
-    // Init SDL Window, Font and Renderer
-    // TODO
-    ...
-    ...
-     
+    SDL_Window*   pWindow;
+    TTF_Font*     pFont;    
+    SDL_Renderer* pRenderer;
+    Canvas*       pCanvas;
+    GFX*          pGfx;
+    GameData*     pGame; 
     // Do not check parameters as we are checking them when creating the different structures
+    // First create Canvas
     pCanvas = _newCanvas(nbCharX, nbCharY, charW, charH);
-    pGfx    = _newGFX
-    
-    
+    //Initialize SDL and TTF
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        rageQuit(100, "SDL Init failed !");
+    }
+    if( TTF_Init() < 0 )
+    {
+        rageQuit(105, "TTF Init failed !");
+    }
+    // Init SDL Window, and Renderer (window dimensions are given by nbCharX/Y * charW/H)
+    if( SDL_CreateWindowAndRenderer(nbCharX*charW, nbCharY*charH, 0, &pWindow, &pRenderer) < 0){
+        rageQuit(110, "Creation of Window and Renderer failed !");
+    }
+    // Load emoji font (do not test result, we will when creating GFX struct)
+    pFont = TTF_OpenFont("GameRGR/fonts/NotoColorEmoji.ttf", 32);
+    // Create GFX structure
+    pGfx = _newGFX(pWindow, pFont, pRenderer, pCanvas);
+    // Create game structure
+    pGame = _newGame(pGfx, pCb, pUserData, 0);
+    // Return Game structure
+    return pGame;
+}
 
+void gameLoop(GameData* pGame){
+    // Variables
+    SDL_Event sdlEvt;
+    SDL_Rect  rect;
+    int quit = 0;
+    // Check the whole structure before starting
+    // TODO
+    // Game loop (infinite)
+    while(!quit){
+        // Get events
+        while( SDL_PollEvent( &sdlEvt ) != 0 ){
+            
+            // User requests quit
+            if( sdlEvt.type == SDL_QUIT ){
+                quit = 1;
+            }
+            // User releases a key
+            else if( sdlEvt.type == SDL_KEYUP ){
+                printf("UP");
+                if(sdlEvt.key.keysym.sym == KEY_ESCAPE){
+                    quit = 1;
+                }
+            }
+            else if( sdlEvt.type == SDL_KEYDOWN){
+                printf("DOWN");
+            }
+        }
+        // Update model
 
-    
+                
+        // Draw frame
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 0,0,0, 255);
+        SDL_RenderClear(pGame->pGfx->pRenderer);
+        
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = 256;
+        rect.h = 128;
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,128,64, 255);
+        SDL_RenderFillRect(pGame->pGfx->pRenderer, &rect);                
+
+        SDL_RenderPresent(pGame->pGfx->pRenderer);
+        
+        // Wait for next frame
+        SDL_Delay(17);
+    }
+}
+
+void closeGame(GameData* pGame){
+    // All free
+    // TTF quit
+    // SDL quit
     /*
         Game Data
             pGfx (GFX)
@@ -162,13 +233,4 @@ GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUser
     */
 }
 
-void closeGame(GameData* pGame){
-
-}
-
-int main(){
-    
-
-    return 0;
-}
 
