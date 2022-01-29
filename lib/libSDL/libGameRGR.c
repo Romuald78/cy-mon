@@ -193,15 +193,28 @@ void gameLoop(GameData* pGame){
 
                 
         // Draw frame
+        
         SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 0,0,0, 255);
         SDL_RenderClear(pGame->pGfx->pRenderer);
         
+        // Fill rect        
         rect.x = 0;
         rect.y = 0;
         rect.w = 256;
         rect.h = 128;
-        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,128,64, 255);
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,255,255, 255);
         SDL_RenderFillRect(pGame->pGfx->pRenderer, &rect);                
+
+        SDL_Color fg = {255,255,255,255};
+        SDL_Color bg = {0,128,64, 255};
+        // TODO ???? Blended / Shaded ???
+        SDL_Surface* pSurf = TTF_RenderUTF8_Blended(pGame->pGfx->pFont, "🥞"EMOT_RABBIT, fg);
+        SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGame->pGfx->pRenderer, pSurf);
+        rect.x = 64;
+        rect.y = 64;
+        rect.w = rect.x+64*2;
+        rect.h = 128;
+        SDL_RenderCopy(pGame->pGfx->pRenderer, pTex, NULL, &rect);
 
         SDL_RenderPresent(pGame->pGfx->pRenderer);
         
