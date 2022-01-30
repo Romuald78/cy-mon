@@ -19,6 +19,69 @@ void rageQuit(int errorCode, const char* format, ...){
     exit(errorCode);
 }
 
+#define ALPHA(i)        ((i>>24)&0xFF)
+#define RED(i)          ((i>>16)&0xFF)
+#define GREEN(i)        ((i>> 8)&0xFF)
+#define BLUE(i)         ((i    )&0xFF)
+#define COLOR(r,g,b,a)  (((a&0xFF)<<24)+((r&0xFF)<<16)+((g&0xFF)<<8)+(b&0xFF))
+#define INT2COLOR(i)    {RED(i),GREEN(i),BLUE(i),ALPHA(i)}
+void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2){
+        SDL_Rect  rect;
+        SDL_Color fg = INT2COLOR(color);
+        SDL_Color bg = INT2COLOR(color2);
+        // TODO check params
+  
+  
+        
+        SDL_Surface* pSurfShaded = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
+        SDL_SetColorKey(pSurfShaded, SDL_TRUE, SDL_MapRGB(pSurfShaded->format, RED(color2), GREEN(color2), BLUE(color2)));
+        SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
+        rect.x = x*pGfx->pCanvas->charW;
+        rect.y = y*pGfx->pCanvas->charH;
+        rect.w = pGfx->pCanvas->charW;
+        rect.h = pGfx->pCanvas->charH;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+
+
+        SDL_Surface* pSurfBlended = TTF_RenderUTF8_Blended(pGfx->pFont, emoji, fg);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfBlended);
+        rect.x += pGfx->pCanvas->charW;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+
+
+        SDL_Surface* pSurfSolid = TTF_RenderUTF8_Solid(pGfx->pFont, emoji, fg);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfSolid);
+        rect.x += pGfx->pCanvas->charW;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+
+/*
+        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_MOD);
+        SDL_SetSurfaceBlendMode(pSurfSolid, SDL_BLENDMODE_MOD);
+        SDL_BlitSurface(pSurfShaded, NULL, pSurfSolid, NULL);
+//        SDL_BlitSurface(pSurfShaded, NULL, pSurfSolid, NULL);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
+        rect.x += pGfx->pCanvas->charW;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+*/
+
+//        SDL_DestroyTexture(pTex);
+//        SDL_FreeSurface(pSurf);
+}
+
+
+      
+/*
+        // Fill rect        
+        rect.x = 64;
+        rect.y = 64;
+        rect.w = 64;
+        rect.h = 64;
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,0,0, 200);
+        SDL_RenderFillRect(pGame->pGfx->pRenderer, &rect);                
+//*/
+
+
+
 Canvas* _newCanvas(int nbCharX, int nbCharY, int charW, int charH){
     // Variables
     Canvas* canvas;
@@ -165,14 +228,14 @@ GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUser
 void gameLoop(GameData* pGame){
     // Variables
     SDL_Event sdlEvt;
-    SDL_Rect  rect;
+    SDL_Rect  rect = {0};
     int quit = 0;
     // Check the whole structure before starting
     // TODO
     // Game loop (infinite)
     while(!quit){
         // Get events
-        while( SDL_PollEvent( &sdlEvt ) != 0 ){
+        while( SDL_PollEvent(&sdlEvt) ){
             
             // User requests quit
             if( sdlEvt.type == SDL_QUIT ){
@@ -180,51 +243,39 @@ void gameLoop(GameData* pGame){
             }
             // User releases a key
             else if( sdlEvt.type == SDL_KEYUP ){
-                printf("UP");
+                printf("UP\n");
                 if(sdlEvt.key.keysym.sym == KEY_ESCAPE){
                     quit = 1;
                 }
             }
-            else if( sdlEvt.type == SDL_KEYDOWN){
-                printf("DOWN");
+            else if( sdlEvt.type == SDL_KEYDOWN && sdlEvt.key.repeat == 0 ){
+                printf("DOWN\n");
             }
         }
         // Update model
-
+        
                 
-        // Draw frame
-        
-        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 0,0,0, 255);
+        // Draw frame        
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 120,120,0, 255);
         SDL_RenderClear(pGame->pGfx->pRenderer);
+
+        drawEmoji(pGame->pGfx, 0, 0, EMOT_RABBIT, 0xFF0000FF, 0xFFFF0000);
+        drawEmoji(pGame->pGfx, 1, 1, EMOT_SNAKE, 0xFF0000FF,0xFFFF0000);
+        drawEmoji(pGame->pGfx, 2, 2, EMOT_SHEEP, 0xFF0000FF,0xFFFF0000);
+        drawEmoji(pGame->pGfx, 3, 3, EMOT_GOAT, 0xFF0000FF,0xFFFF0000);
         
-        // Fill rect        
-        rect.x = 0;
-        rect.y = 0;
-        rect.w = 256;
-        rect.h = 128;
-        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,255,255, 255);
-        SDL_RenderFillRect(pGame->pGfx->pRenderer, &rect);                
-
-        SDL_Color fg = {255,255,255,255};
-        SDL_Color bg = {0,128,64, 255};
-        // TODO ???? Blended / Shaded ???
-        SDL_Surface* pSurf = TTF_RenderUTF8_Blended(pGame->pGfx->pFont, "🥞"EMOT_RABBIT, fg);
-        SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGame->pGfx->pRenderer, pSurf);
-        rect.x = 64;
-        rect.y = 64;
-        rect.w = rect.x+64*2;
-        rect.h = 128;
-        SDL_RenderCopy(pGame->pGfx->pRenderer, pTex, NULL, &rect);
-
+        
         SDL_RenderPresent(pGame->pGfx->pRenderer);
         
         // Wait for next frame
         SDL_Delay(17);
     }
+    // Close game and free all resources
+    
 }
 
 void closeGame(GameData* pGame){
-    // All free
+    // All free (font, window, renderer, canvas, ...
     // TTF quit
     // SDL quit
     /*
