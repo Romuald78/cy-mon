@@ -29,12 +29,19 @@ void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2){
         SDL_Rect  rect;
         SDL_Color fg = INT2COLOR(color);
         SDL_Color bg = INT2COLOR(color2);
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
         // TODO check params
   
   
         
+        r = RED(color2);
+        g = GREEN(color2);
+        b = BLUE(color2);
         SDL_Surface* pSurfShaded = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
-        SDL_SetColorKey(pSurfShaded, SDL_TRUE, SDL_MapRGB(pSurfShaded->format, RED(color2), GREEN(color2), BLUE(color2)));
+        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_BLEND);
+        SDL_SetColorKey(pSurfShaded, SDL_TRUE, SDL_MapRGB(pSurfShaded->format, r, g, b));
         SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
         rect.x = x*pGfx->pCanvas->charW;
         rect.y = y*pGfx->pCanvas->charH;
@@ -44,27 +51,41 @@ void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2){
 
 
         SDL_Surface* pSurfBlended = TTF_RenderUTF8_Blended(pGfx->pFont, emoji, fg);
+        SDL_SetSurfaceBlendMode(pSurfBlended, SDL_BLENDMODE_BLEND);
         pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfBlended);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 
 
         SDL_Surface* pSurfSolid = TTF_RenderUTF8_Solid(pGfx->pFont, emoji, fg);
+        SDL_SetSurfaceBlendMode(pSurfSolid, SDL_BLENDMODE_BLEND);
         pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfSolid);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 
+//----------------------------------------------
 /*
-        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_MOD);
-        SDL_SetSurfaceBlendMode(pSurfSolid, SDL_BLENDMODE_MOD);
-        SDL_BlitSurface(pSurfShaded, NULL, pSurfSolid, NULL);
-//        SDL_BlitSurface(pSurfShaded, NULL, pSurfSolid, NULL);
+        if( SDL_BlitSurface(pSurfBlended, NULL, pSurfShaded, NULL) != 0){
+            rageQuit(900, SDL_GetError());
+        }
         pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
-*/
+//*/
+//----------------------------------------------
+/*
+        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_ADD);
+        if( SDL_BlitSurface(pSurfShaded, NULL, pSurfBlended, NULL) != 0){
+            rageQuit(900, SDL_GetError());
+        }
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfBlended);
+        rect.x += pGfx->pCanvas->charW;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+//*/
+//----------------------------------------------
 
-//        SDL_DestroyTexture(pTex);
+
+        SDL_DestroyTexture(pTex);
 //        SDL_FreeSurface(pSurf);
 }
 
