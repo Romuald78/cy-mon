@@ -1,3 +1,4 @@
 build/*
 error.log
+/*.o
 
