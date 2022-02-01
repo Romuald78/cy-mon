@@ -61,5 +61,5 @@
     void gameLoop(GameData* pGame);
     // Draw API
     void drawEmptyRect(GFX* pGfx, int x, int y, int color);
-    void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2);
+    void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2, int color3);
 #endif

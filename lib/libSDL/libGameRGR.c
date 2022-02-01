@@ -25,30 +25,65 @@ void rageQuit(int errorCode, const char* format, ...){
 #define BLUE(i)         ((i    )&0xFF)
 #define COLOR(r,g,b,a)  (((a&0xFF)<<24)+((r&0xFF)<<16)+((g&0xFF)<<8)+(b&0xFF))
 #define INT2COLOR(i)    {RED(i),GREEN(i),BLUE(i),ALPHA(i)}
-void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2){
+void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color1, int color2, int color3){
         SDL_Rect  rect;
-        SDL_Color fg = INT2COLOR(color);
+        SDL_Color fg = INT2COLOR(color1);
         SDL_Color bg = INT2COLOR(color2);
-        unsigned char r;
-        unsigned char g;
-        unsigned char b;
+        SDL_Surface* pSurf;
+        SDL_Texture* pTex;
         // TODO check params
-  
-  
+
+        // Set position and size for blitting
+        rect.x = x*pGfx->pCanvas->charW;
+        rect.y = y*pGfx->pCanvas->charH;
+        rect.w = pGfx->pCanvas->charW;
+        rect.h = pGfx->pCanvas->charH;
+        // Draw background
+        SDL_SetRenderDrawColor(pGfx->pRenderer, RED(color3),GREEN(color3),BLUE(color3),ALPHA(color3));
+        SDL_RenderFillRect(pGfx->pRenderer, &rect);                
         
-        r = RED(color2);
-        g = GREEN(color2);
-        b = BLUE(color2);
-        SDL_Surface* pSurfShaded = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
-        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_BLEND);
-        SDL_SetColorKey(pSurfShaded, SDL_TRUE, SDL_MapRGB(pSurfShaded->format, r, g, b));
-        SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
+        // Create surface from emoji
+        if(ALPHA(color1)!=0xFF){
+            pSurf = TTF_RenderUTF8_Blended(pGfx->pFont, emoji, fg);
+        }
+        else{
+            pSurf = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
+            SDL_SetColorKey(pSurf, SDL_TRUE, SDL_MapRGB( pSurf->format,
+                                                         RED(color2),
+                                                         GREEN(color2),
+                                                         BLUE(color2)));
+        }        
+        // Create texture from surface
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurf);
+        SDL_SetTextureBlendMode(pTex, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(pTex, ALPHA(color1));
+        // display Emoji on screen
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
+        // Destroy allocations
+        SDL_FreeSurface(pSurf);
+        SDL_DestroyTexture(pTex);
+
+        
+/*        
+        SDL_Surface* pBg = SDL_CreateRGBSurface(0, pGfx->pCanvas->charW, pGfx->pCanvas->charH,
+                                                32, 0, 0, 0, 0);
+        SDL_SetSurfaceBlendMode(pBg, SDL_BLENDMODE_BLEND);
+        SDL_Texture* pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pBg);
         rect.x = x*pGfx->pCanvas->charW;
         rect.y = y*pGfx->pCanvas->charH;
         rect.w = pGfx->pCanvas->charW;
         rect.h = pGfx->pCanvas->charH;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
-
+                                                
+        r = RED(color2);
+        g = GREEN(color2);
+        b = BLUE(color2);
+        SDL_Surface* pSurfShaded = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
+        SDL_SetColorKey(pSurfShaded, SDL_TRUE, SDL_MapRGB(pSurfShaded->format, r, g, b));
+        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_BLEND);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
+        rect.x += pGfx->pCanvas->charW;
+        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 
         SDL_Surface* pSurfBlended = TTF_RenderUTF8_Blended(pGfx->pFont, emoji, fg);
         SDL_SetSurfaceBlendMode(pSurfBlended, SDL_BLENDMODE_BLEND);
@@ -56,37 +91,35 @@ void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color, int color2){
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 
-
         SDL_Surface* pSurfSolid = TTF_RenderUTF8_Solid(pGfx->pFont, emoji, fg);
         SDL_SetSurfaceBlendMode(pSurfSolid, SDL_BLENDMODE_BLEND);
         pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfSolid);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 
+//*/
 //----------------------------------------------
 /*
-        if( SDL_BlitSurface(pSurfBlended, NULL, pSurfShaded, NULL) != 0){
+        if( SDL_BlitSurface(pSurfShaded, NULL, pBg, NULL) != 0){
             rageQuit(900, SDL_GetError());
         }
-        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfShaded);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pBg);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 //*/
 //----------------------------------------------
 /*
-        SDL_SetSurfaceBlendMode(pSurfShaded, SDL_BLENDMODE_ADD);
-        if( SDL_BlitSurface(pSurfShaded, NULL, pSurfBlended, NULL) != 0){
+        SDL_SetSurfaceBlendMode(pBg, SDL_BLENDMODE_ADD);
+        if( SDL_BlitSurface(pSurfShaded, NULL, pBg, NULL) != 0){
             rageQuit(900, SDL_GetError());
         }
-        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurfBlended);
+        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pBg);
         rect.x += pGfx->pCanvas->charW;
         SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
 //*/
 //----------------------------------------------
 
 
-        SDL_DestroyTexture(pTex);
-//        SDL_FreeSurface(pSurf);
 }
 
 
@@ -246,57 +279,9 @@ GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUser
     return pGame;
 }
 
-void gameLoop(GameData* pGame){
-    // Variables
-    SDL_Event sdlEvt;
-    SDL_Rect  rect = {0};
-    int quit = 0;
-    // Check the whole structure before starting
-    // TODO
-    // Game loop (infinite)
-    while(!quit){
-        // Get events
-        while( SDL_PollEvent(&sdlEvt) ){
-            
-            // User requests quit
-            if( sdlEvt.type == SDL_QUIT ){
-                quit = 1;
-            }
-            // User releases a key
-            else if( sdlEvt.type == SDL_KEYUP ){
-                printf("UP\n");
-                if(sdlEvt.key.keysym.sym == KEY_ESCAPE){
-                    quit = 1;
-                }
-            }
-            else if( sdlEvt.type == SDL_KEYDOWN && sdlEvt.key.repeat == 0 ){
-                printf("DOWN\n");
-            }
-        }
-        // Update model
-        
-                
-        // Draw frame        
-        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 120,120,0, 255);
-        SDL_RenderClear(pGame->pGfx->pRenderer);
-
-        drawEmoji(pGame->pGfx, 0, 0, EMOT_RABBIT, 0xFF0000FF, 0xFFFF0000);
-        drawEmoji(pGame->pGfx, 1, 1, EMOT_SNAKE, 0xFF0000FF,0xFFFF0000);
-        drawEmoji(pGame->pGfx, 2, 2, EMOT_SHEEP, 0xFF0000FF,0xFFFF0000);
-        drawEmoji(pGame->pGfx, 3, 3, EMOT_GOAT, 0xFF0000FF,0xFFFF0000);
-        
-        
-        SDL_RenderPresent(pGame->pGfx->pRenderer);
-        
-        // Wait for next frame
-        SDL_Delay(17);
-    }
-    // Close game and free all resources
-    
-}
-
 void closeGame(GameData* pGame){
     // All free (font, window, renderer, canvas, ...
+    // TODO
     // TTF quit
     // SDL quit
     /*
@@ -316,6 +301,82 @@ void closeGame(GameData* pGame){
             pUserData (void*)
             displayFPS (int)
     */
+}
+
+void gameLoop(GameData* pGame){
+    // Variables
+    GFX*          pGfx;
+    Canvas*       pCanvas;
+    void*         pData;
+    Callbacks*    pCb; 
+    int           dispFPS; 
+    SDL_Event     sdlEvt;
+    Event         rgrEvt;
+    SDL_Rect      rect = {0};
+    int           quit =  0;
+    unsigned long startTime;
+    unsigned long stopTime;
+    unsigned long frameTime;
+    // Check the whole structure before starting
+    // TODO
+    // Store each pointer locally
+    pGfx    = pGame->pGfx;
+    pCanvas = pGfx->pCanvas;
+    pData   = pGame->pUserData;
+    pCb     = pGame->pUserCallbacks; 
+    dispFPS = pGame->displayFPS; 
+    // First time measurement
+    startTime = SDL_GetTicks64();        
+    stopTime  = startTime;
+    frameTime = 0;
+    // Call INIT callback
+    pCb->cbInit(pData, pCanvas);
+    // Game loop (infinite)
+    while(quit==0){
+        // Get events
+        while( SDL_PollEvent(&sdlEvt) ){            
+            // User requests quit
+            if( sdlEvt.type == SDL_QUIT ){
+                quit |= 1;
+            }
+            // User releases a key
+            else if( sdlEvt.type == SDL_KEYUP ){
+                if(sdlEvt.key.keysym.sym == KEY_ESCAPE){
+                    quit |= 1;
+                }
+                // Call EVENT callback
+                rgrEvt.keyState = KEY_RELEASED;
+                rgrEvt.keyCode  = sdlEvt.key.keysym.sym;
+                pCb->cbEvent(pData, pCanvas, &rgrEvt);
+            }
+            else if( sdlEvt.type == SDL_KEYDOWN && sdlEvt.key.repeat == 0 ){
+                // Call EVENT callback
+                rgrEvt.keyState = KEY_PRESSED;
+                rgrEvt.keyCode  = sdlEvt.key.keysym.sym;
+                pCb->cbEvent(pData, pCanvas, &rgrEvt);
+            }
+        }
+        // Call UPDATE callback
+        quit |= pCb->cbUpdate(pData, pCanvas, frameTime);
+        // Draw frame        
+        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 0, 0, 0, 255);
+        SDL_RenderClear(pGame->pGfx->pRenderer);
+        // Call DRAW callback
+        pCb->cbDraw(pData, pCanvas, pGfx);
+        // Finalize frame rendering        
+        SDL_RenderPresent(pGame->pGfx->pRenderer);
+        // Wait for next frame
+        stopTime  = SDL_GetTicks64();
+        frameTime = stopTime-startTime;
+        startTime = stopTime;
+        if(frameTime < 17){
+            SDL_Delay(17-frameTime);        
+        }       
+    }
+    // Call FINISH callback
+    pCb->cbFinish(pData);
+    // Close game and free all resources
+    closeGame(pGame);   
 }
 
 

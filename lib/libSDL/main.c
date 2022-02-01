@@ -8,25 +8,32 @@ typedef struct {
 } UserData;
 
 void init(void* pUSerData, Canvas* pCanvas){
-    printf("     [INIT]\n");
+    printf("[INIT]\n");
 }
 
 void event(void* pUserData, Canvas* pCanvas, Event* pEvt){
-    //printf("     >>>[EVENT]\n");
-    
+    //printf("[EVENT]>\n");
+    if(pEvt==NULL){
+        rageQuit(3000, "EVENT : Event pointer is NULL !");
+    }
+    if(pEvt->keyCode == KEY_LEFT && pEvt->keyState == KEY_PRESSED){
+        printf("LEFT\n");
+    }
 }
 
 int  update(void* pUserData, Canvas* pCanvas, double deltaTime){
-    //printf("     [UPDATE]\n");
+    //printf("[UPDATE]\n");
     // TODO test params
+    //
+    UserData* pData = (UserData*)pUserData;    
+    pData->time += deltaTime;
     
-    ((UserData*)pUserData)->time += deltaTime;
     
     return 0;
 }
 
 void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
-    //printf("     [DRAW]\n");
+    //printf("[DRAW]\n");
     // Variables
     
     // Check parameters
@@ -39,6 +46,39 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
     if(pGfx==NULL){
         rageQuit(1002, "DRAW : GFX pointer is NULL !");
     }
+   
+    unsigned int frontColor = 0xFFFFFF00;
+    unsigned int backColor  = 0xFF804040;
+    unsigned int cellColor  = 0xFF707070;
+    UserData* pData = (UserData*)(pUserData);
+
+    int T = 500;
+    unsigned short alpha = 255*((int)pData->time % (2*T))/T;
+    if (alpha>=255){
+        alpha = 510-alpha;
+    }
+    
+    drawEmoji(pGfx, 0, 0, EMOT_RABBIT       , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 1, 0, EMOT_SNAKE        , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 2, 0, EMOT_SHEEP        , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 3, 0, EMOT_GOAT         , frontColor, backColor, cellColor);
+    
+    drawEmoji(pGfx, 0, 1, EMOT_WRENCH       , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 1, 1, EMOT_HAMMER       , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 2, 1, EMOT_AXE          , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 3, 1, EMOT_TOOLBOX      , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 4, 1, EMOT_MAGNET       , frontColor, backColor, cellColor);
+    
+    drawEmoji(pGfx, 0, 2, EMOT_KEY          , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 1, 2, EMOT_LOCK_CLOSED  , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 2, 2, EMOT_LOCK_OPEN    , frontColor, backColor, cellColor);
+
+    drawEmoji(pGfx, 0, 3, EMOT_GEM          , 0x00FFFF00 | ((alpha&0xFF)<<24), backColor, cellColor);
+    drawEmoji(pGfx, 1, 3, EMOT_MONEYBAG     , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 2, 3, EMOT_BANKNOTE     , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 3, 3, EMOT_CROWN        , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 4, 3, EMOT_RING         , frontColor, backColor, cellColor);
+
 /*
     // Loop through the grid cells
     double t = ((UserData*)pUserData)->time/2;
@@ -142,7 +182,7 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
 }
 
 void finish(void* pUserData){
-    printf("     [FINISH]\n");
+    printf("[FINISH]\n");
 }
 
 
@@ -166,7 +206,6 @@ int main(int argc, char** argv){
     UserData userDat;
     // Game data pointer
     GameData* pGame;
-        
         
     // ---------------------------------------------
     // CHECK PARAMETERS
