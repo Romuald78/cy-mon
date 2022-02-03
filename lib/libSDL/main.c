@@ -48,8 +48,8 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
     }
    
     unsigned int frontColor = 0xFFFFFF00;
-    unsigned int backColor  = 0xFF804040;
-    unsigned int cellColor  = 0xFF707070;
+    unsigned int backColor  = 0xFFA020A0;
+    unsigned int cellColor  = 0xFF60A090;
     UserData* pData = (UserData*)(pUserData);
 
     int T = 500;
@@ -58,126 +58,42 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
         alpha = 510-alpha;
     }
     
-    drawEmoji(pGfx, 0, 0, EMOT_RABBIT       , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 1, 0, EMOT_SNAKE        , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 2, 0, EMOT_SHEEP        , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 3, 0, EMOT_GOAT         , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 0, 0, EMOT_RABBIT       , 0xFEFFFFFF, backColor , cellColor);
+    drawEmoji(pGfx, 1, 0, EMOT_SNAKE        , 0xFFFFFF00, 0xFF008000, cellColor);
+    drawEmoji(pGfx, 2, 0, EMOT_SHEEP        , 0xFF000000, 0xFF808080, cellColor);
+    drawEmoji(pGfx, 3, 0, EMOT_GOAT         , 0xFF101010, 0xFF707070 , cellColor);
+    drawEmoji(pGfx, 4, 0, EMOT_BEE          , 0xFEF0F000, 0xFF404000 , cellColor);
     
-    drawEmoji(pGfx, 0, 1, EMOT_WRENCH       , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 1, 1, EMOT_HAMMER       , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 2, 1, EMOT_AXE          , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 3, 1, EMOT_TOOLBOX      , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 4, 1, EMOT_MAGNET       , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 0, 1, EMOT_WRENCH       , 0xFFFFFFFF, 0xFF808080, cellColor);
+    drawEmoji(pGfx, 1, 1, EMOT_HAMMER       , 0xFFFFFFFF, 0xFF808080, cellColor);
+    drawEmoji(pGfx, 2, 1, EMOT_AXE          , 0xFFFFFFFF, 0xFFC08000, cellColor);
+    drawEmoji(pGfx, 3, 1, EMOT_TOOLBOX      , 0xFF0000FF, 0xFF000000, cellColor);
+    drawEmoji(pGfx, 4, 1, EMOT_MAGNET       , 0xFEFF0000, 0xFFA0A0A0, cellColor);
     
-    drawEmoji(pGfx, 0, 2, EMOT_KEY          , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 1, 2, EMOT_LOCK_CLOSED  , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 2, 2, EMOT_LOCK_OPEN    , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 0, 2, EMOT_KEY          , 0xFFFFFF80, 0xFF808040, cellColor);
+    drawEmoji(pGfx, 1, 2, EMOT_LOCK_CLOSED  , 0xFFFFFF80, 0xFF808040, cellColor);
+    drawEmoji(pGfx, 2, 2, EMOT_LOCK_OPEN    , 0xFFFFFF80, 0xFF808040, cellColor);
 
-    drawEmoji(pGfx, 0, 3, EMOT_GEM          , 0x00FFFF00 | ((alpha&0xFF)<<24), backColor, cellColor);
-    drawEmoji(pGfx, 1, 3, EMOT_MONEYBAG     , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 2, 3, EMOT_BANKNOTE     , frontColor, backColor, cellColor);
+    drawEmoji(pGfx, 0, 3, EMOT_GEM          , 0x00FFFF00 | ((alpha&0xFE)<<24), backColor, cellColor);
+    drawEmoji(pGfx, 1, 3, EMOT_MONEYBAG     , 0xFFFFFF00, 0xFFA08040, cellColor);
+    drawEmoji(pGfx, 2, 3, EMOT_BANKNOTE     , 0xFF40E040, 0xFF000000, cellColor);
     drawEmoji(pGfx, 3, 3, EMOT_CROWN        , frontColor, backColor, cellColor);
     drawEmoji(pGfx, 4, 3, EMOT_RING         , frontColor, backColor, cellColor);
 
 /*
-    // Loop through the grid cells
-    double t = ((UserData*)pUserData)->time/2;
-    srand(0);
-    for(int x=0; x<pCanvas->nbCharX; x++){
-        for(int y=0; y<pCanvas->nbCharY; y++){
-            int R = (int)(512*(x+t)/pCanvas->nbCharX)%512; 
-            int G = (int)(512*(y+t)/pCanvas->nbCharY)%512;
-            int B = 128;
-            int A = 255;
-            int color = (A<<24)+(R<<16)+(G<<8)+B;
-            if (R>=256){
-                R = 511-R;
-            } 
-            if (G>=256){
-                G = 511-G;
-            } 
-            //drawEmptyRect(pGfx, x, y, color);
-            int r = rand()%101;
-            if(r <= 5){
                 drawText(pGfx, EMOT_TREE, x, y, 0xFF80FF80);
-            }
-            else if(r <= 10){
                 drawText(pGfx, EMOT_CACTUS, x, y, 0xFF00FF00);
-            }
-            else if(r <= 15){
                 drawText(pGfx, EMOT_PINE, x, y, 0xFF00A000);
-            }
-            else if(r <= 20){
-                drawText(pGfx, EMOT_PINE, x, y, 0xFF00A000);
-            }
-            else if(r <= 25){
                 drawText(pGfx, EMOT_ROCK, x, y, 0xFF808080);
-            }
-            else if(r <= 30){
                 drawText(pGfx, EMOT_PALMTREE, x, y, 0xFF90FF00);
-            }
-            else if(r <= 35){
                 drawText(pGfx, EMOT_CLOVER, x, y, 0xFF008000);
-            }
-            else if(r <= 40){
                 drawText(pGfx, EMOT_HERB, x, y, 0xFFA0F0A0);
-            }
-            else if(r <= 45){
+
                 drawText(pGfx, EMOT_TULIP, x, y, 0xFFFF4020);
-            }
-            else if(r <= 50){
                 drawText(pGfx, EMOT_FLOWER, x, y, 0xFFFF8080);
-            }
-            else if(r <= 55){
-                drawText(pGfx, EMOT_MONEYBAG, x, y, 0xFFFFFF80);
-            }
-            else if(r <= 60){
-                drawText(pGfx, EMOT_GEM, x, y, color);
-            }
-            else if(r <= 65){
+
                 drawText(pGfx, EMOT_BEE, x, y, 0xFFF0F080);
-            }
-            else if(r <= 70){
-                drawText(pGfx, EMOT_RABBIT, x, y, 0xFFFFFFFF);
-            }
-
-        }
-    }
-
 //*/
-    
-/* -----------------------------------------------------------------------------------
-
-        // TODO here we have to call the user callback instead (draw)
-        // DEBUG
-        // Draw a 10x10 grid, with 32x32 cells
-        // Prepare a text (use tmp memory for surface and texture)
-        SDL_Color    color1  = { 0, 0, 0 };
-        SDL_Color    color2  = { 0, 0, 0 };
-        SDL_Surface* fntSurf;
-	    SDL_Texture* fntText;;
-        for(int i=0;i<nbCharY;i++){
-            for(int j=0;j<nbCharX;j++){
-                SDL_Rect rect;
-                rect.x = charW*j;
-                rect.y = charH*i;
-                rect.w = charW;
-                rect.h = charH;
-                SDL_SetRenderDrawColor(renderer, (255*i)/nbCharY, (255*j)/nbCharX, 128, 255);
-                // Render background
-                SDL_RenderFillRect(renderer, &rect);
-                // Render text
-                fntSurf = TTF_RenderUTF8_Blended(font, "😄", color1); 
-//              fntSurf = TTF_RenderGlyph32_Blended(font, "😄", color1); 
-//                fntSurf = TTF_RenderUTF8_Shaded(font, "😄", color1, color2); 
-                fntText = SDL_CreateTextureFromSurface(renderer, fntSurf);
-                SDL_RenderCopy(renderer, fntText, NULL, &rect);
-                // Remove font tmp memory
-                SDL_DestroyTexture(fntText);
-                SDL_FreeSurface   (fntSurf);
-            }
-        }
-//*///-------------------------------------------------------------------------------
     
 }
 
