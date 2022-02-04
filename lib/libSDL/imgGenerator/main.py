@@ -191,7 +191,7 @@ def createAtlas(font, out_name, strList):
     print(N,NBX,NBY)
     SIZE = 80
     # sort list
-    strList = sorted(strList, key=lambda x:x[1])
+    strList = sorted(strList, key=lambda x:-x[1])
     # Load font
     fnt = ImageFont.truetype(font, size=109, layout_engine=ImageFont.LAYOUT_RAQM)
     # Create image according to emoji list
@@ -213,7 +213,7 @@ def createAtlas(font, out_name, strList):
             y += 1
 
     im.show()
-    im.save(f"testemoji_{out_name}.png")
+    im.save(f"emoji.png")
 
 
 

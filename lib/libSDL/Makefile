@@ -33,7 +33,7 @@ lib$(LIB).so: lib$(LIB).o
 # User executable
 # -----------------------------
 $(EXEC) : main.c lib$(LIB).so
-	gcc -I$(APIDIR) main.c -L$(LIBDIR) -l$(LIB) -lSDL2 -lSDL2_ttf -o $@
+	gcc -I$(APIDIR) main.c -L$(LIBDIR) -l$(LIB) -lSDL2 -lSDL2_ttf -lSDL2_image -o $@
 	export LD_LIBRARY_PATH=$(LIBDIR)
 
 .PHONY: deploy

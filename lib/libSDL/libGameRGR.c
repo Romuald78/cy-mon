@@ -4,6 +4,7 @@
 #include "libGameRGR.h"
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "SDL_image.h"
 
 
 void rageQuit(int errorCode, const char* format, ...){
@@ -48,19 +49,6 @@ void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color1, int color2, int
         // display Emoji on screen
         SDL_RenderCopy(pGfx->pRenderer, pGfx->pTexture, &textRect, &rendRect);
 }
-
-
-      
-/*
-        // Fill rect        
-        rect.x = 64;
-        rect.y = 64;
-        rect.w = 64;
-        rect.h = 64;
-        SDL_SetRenderDrawColor(pGame->pGfx->pRenderer, 255,0,0, 200);
-        SDL_RenderFillRect(pGame->pGfx->pRenderer, &rect);                
-//*/
-
 
 
 Canvas* _newCanvas(int nbCharX, int nbCharY, int charW, int charH){
@@ -113,7 +101,7 @@ GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
     pGfx->pRenderer = pRenderer;
     pGfx->pCanvas   = pCanvas;
     // Create texture with all emojis from bitmap file
-    pSurf = SDL_LoadBMP( "emoji.bmp" );
+    pSurf = IMG_Load( "emoji.png" );
     if(pSurf==NULL){
         rageQuit(27, "Impossible to load emoji atlas !");
     }
