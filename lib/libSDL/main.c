@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "libGameRGR.h"
 
+#define RGB(r,g,b) ((r<<16)|(g<<8)|(b))
 
 typedef struct {
     double time;
@@ -48,53 +49,21 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
     }
    
     unsigned int frontColor = 0xFFFFFF00;
-    unsigned int backColor  = 0xFFA020A0;
-    unsigned int cellColor  = 0xFF60A090;
+    unsigned int backColor  = 0xFFFF0000;
+    unsigned int cellColor  = 0xFFFF0000;
     UserData* pData = (UserData*)(pUserData);
 
-    int T = 500;
-    unsigned short alpha = 255*((int)pData->time % (2*T))/T;
-    if (alpha>=255){
-        alpha = 510-alpha;
+    int T = 2000;
+    unsigned short v = 255*((int)pData->time % (2*T))/T;
+    if (v>=255){
+        v = 510-v;
     }
-    
-    drawEmoji(pGfx, 0, 0, EMOT_RABBIT       , 0xFEFFFFFF, backColor , cellColor);
-    drawEmoji(pGfx, 1, 0, EMOT_SNAKE        , 0xFFFFFF00, 0xFF008000, cellColor);
-    drawEmoji(pGfx, 2, 0, EMOT_SHEEP        , 0xFF000000, 0xFF808080, cellColor);
-    drawEmoji(pGfx, 3, 0, EMOT_GOAT         , 0xFF101010, 0xFF707070 , cellColor);
-    drawEmoji(pGfx, 4, 0, EMOT_BEE          , 0xFEF0F000, 0xFF404000 , cellColor);
-    
-    drawEmoji(pGfx, 0, 1, EMOT_WRENCH       , 0xFFFFFFFF, 0xFF808080, cellColor);
-    drawEmoji(pGfx, 1, 1, EMOT_HAMMER       , 0xFFFFFFFF, 0xFF808080, cellColor);
-    drawEmoji(pGfx, 2, 1, EMOT_AXE          , 0xFFFFFFFF, 0xFFC08000, cellColor);
-    drawEmoji(pGfx, 3, 1, EMOT_TOOLBOX      , 0xFF0000FF, 0xFF000000, cellColor);
-    drawEmoji(pGfx, 4, 1, EMOT_MAGNET       , 0xFEFF0000, 0xFFA0A0A0, cellColor);
-    
-    drawEmoji(pGfx, 0, 2, EMOT_KEY          , 0xFFFFFF80, 0xFF808040, cellColor);
-    drawEmoji(pGfx, 1, 2, EMOT_LOCK_CLOSED  , 0xFFFFFF80, 0xFF808040, cellColor);
-    drawEmoji(pGfx, 2, 2, EMOT_LOCK_OPEN    , 0xFFFFFF80, 0xFF808040, cellColor);
 
-    drawEmoji(pGfx, 0, 3, EMOT_GEM          , 0x00FFFF00 | ((alpha&0xFE)<<24), backColor, cellColor);
-    drawEmoji(pGfx, 1, 3, EMOT_MONEYBAG     , 0xFFFFFF00, 0xFFA08040, cellColor);
-    drawEmoji(pGfx, 2, 3, EMOT_BANKNOTE     , 0xFF40E040, 0xFF000000, cellColor);
-    drawEmoji(pGfx, 3, 3, EMOT_CROWN        , frontColor, backColor, cellColor);
-    drawEmoji(pGfx, 4, 3, EMOT_RING         , frontColor, backColor, cellColor);
-
-/*
-                drawText(pGfx, EMOT_TREE, x, y, 0xFF80FF80);
-                drawText(pGfx, EMOT_CACTUS, x, y, 0xFF00FF00);
-                drawText(pGfx, EMOT_PINE, x, y, 0xFF00A000);
-                drawText(pGfx, EMOT_ROCK, x, y, 0xFF808080);
-                drawText(pGfx, EMOT_PALMTREE, x, y, 0xFF90FF00);
-                drawText(pGfx, EMOT_CLOVER, x, y, 0xFF008000);
-                drawText(pGfx, EMOT_HERB, x, y, 0xFFA0F0A0);
-
-                drawText(pGfx, EMOT_TULIP, x, y, 0xFFFF4020);
-                drawText(pGfx, EMOT_FLOWER, x, y, 0xFFFF8080);
-
-                drawText(pGfx, EMOT_BEE, x, y, 0xFFF0F080);
-//*/
-    
+    for(int y=0;y<9;y++){
+        for(int x=0;x<17;x++){    
+            drawEmoji(pGfx, x, y, EMOT_RABBIT       , 0xFE000000 + (RGB(v,v,v)), backColor, cellColor);
+        }
+    }
 }
 
 void finish(void* pUserData){

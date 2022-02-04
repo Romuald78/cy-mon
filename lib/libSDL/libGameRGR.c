@@ -26,53 +26,27 @@ void rageQuit(int errorCode, const char* format, ...){
 #define COLOR(r,g,b,a)  (((a&0xFF)<<24)+((r&0xFF)<<16)+((g&0xFF)<<8)+(b&0xFF))
 #define INT2COLOR(i)    {RED(i),GREEN(i),BLUE(i),ALPHA(i)}
 void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color1, int color2, int color3){
-        SDL_Rect  rect;
-        SDL_Color fg = INT2COLOR(color1);
-        SDL_Color bg = INT2COLOR(color2);
-        SDL_Surface* pSurf;
-        SDL_Texture* pTex;
+        SDL_Rect  textRect;
+        SDL_Rect  rendRect;
         // TODO check params
-        // TODO check all function returns
+        // TODO check all function returns (below)
 
+        // Set position and size for texture source
+        // TODO use a parameter inside GFX structure 
+        textRect.x = x*80;
+        textRect.y = y*80;
+        textRect.w = 80;
+        textRect.h = 80;
         // Set position and size for blitting
-        rect.x = x*pGfx->pCanvas->charW;
-        rect.y = y*pGfx->pCanvas->charH;
-        rect.w = pGfx->pCanvas->charW;
-        rect.h = pGfx->pCanvas->charH;
+        rendRect.x = x*pGfx->pCanvas->charW;
+        rendRect.y = y*pGfx->pCanvas->charH;
+        rendRect.w =   pGfx->pCanvas->charW;
+        rendRect.h =   pGfx->pCanvas->charH;
         // Draw background
-        SDL_SetRenderDrawColor(pGfx->pRenderer, RED(color3),GREEN(color3),BLUE(color3),ALPHA(color3));
-        SDL_RenderFillRect(pGfx->pRenderer, &rect);                
-        
-        // Create surface from emoji
-        if(ALPHA(color1)!=0xFF){
-            pSurf = TTF_RenderUTF8_Blended(pGfx->pFont, emoji, fg);
-        }
-        else{
-            pSurf = TTF_RenderUTF8_Shaded(pGfx->pFont, emoji, fg, bg);
-            SDL_SetColorKey(pSurf, SDL_TRUE, SDL_MapRGB( pSurf->format,
-                                                         RED(color2),
-                                                         GREEN(color2),
-                                                         BLUE(color2)));
-        }        
-        // Create texture from surface
-        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurf);
-        SDL_SetTextureBlendMode(pTex, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(pTex, ALPHA(color1));
+        SDL_SetRenderDrawColor(pGfx->pRenderer, RED(color1),GREEN(color1),BLUE(color1),ALPHA(color1));
+        SDL_RenderFillRect(pGfx->pRenderer, &rendRect);                
         // display Emoji on screen
-        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
-        // Destroy allocations
-        SDL_FreeSurface(pSurf);
-        SDL_DestroyTexture(pTex);
-
-//----------------------------------------------
-/*
-        if( SDL_BlitSurface(pSurfShaded, NULL, pBg, NULL) != 0){
-            rageQuit(900, SDL_GetError());
-        }
-        pTex  = SDL_CreateTextureFromSurface(pGfx->pRenderer, pBg);
-        rect.x += pGfx->pCanvas->charW;
-        SDL_RenderCopy(pGfx->pRenderer, pTex, NULL, &rect);
-//*/
+        SDL_RenderCopy(pGfx->pRenderer, pGfx->pTexture, &textRect, &rendRect);
 }
 
 
@@ -117,6 +91,7 @@ Canvas* _newCanvas(int nbCharX, int nbCharY, int charW, int charH){
 GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
     // Variables
     GFX* pGfx;
+    SDL_Surface* pSurf;
     // Check parameters
     if(pWindow==NULL || pFont==NULL || pRenderer==NULL || pCanvas==NULL){
         rageQuit(20, "CreateGFX null parameters !\n"
@@ -137,6 +112,19 @@ GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
     pGfx->pFont     = pFont;
     pGfx->pRenderer = pRenderer;
     pGfx->pCanvas   = pCanvas;
+    // Create texture with all emojis from bitmap file
+    pSurf = SDL_LoadBMP( "emoji.bmp" );
+    if(pSurf==NULL){
+        rageQuit(27, "Impossible to load emoji atlas !");
+    }
+    // Create texture from surface
+    pGfx->pTexture = SDL_CreateTextureFromSurface(pGfx->pRenderer, pSurf);
+    if(pGfx->pTexture==NULL){
+        rageQuit(28, "Impossible to create emoji texture from surface !");
+    }
+    SDL_SetTextureBlendMode(pGfx->pTexture, SDL_BLENDMODE_BLEND);        
+    // Free surface
+    SDL_FreeSurface(pSurf);
     // Return structure address
     return pGfx;        
 }

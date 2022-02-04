@@ -22,7 +22,8 @@
         void*   pWindow;      // store application window address
         void*   pFont;        // store user font address
         void*   pRenderer;    // store gfx renderer address 
-        Canvas* pCanvas;   
+        void*   pTexture;     // Texture containing all emojis
+        Canvas* pCanvas;  
     } GFX;
     // Event structure
     typedef struct {
