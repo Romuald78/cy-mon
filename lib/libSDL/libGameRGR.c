@@ -26,25 +26,30 @@ void rageQuit(int errorCode, const char* format, ...){
 #define BLUE(i)         ((i    )&0xFF)
 #define COLOR(r,g,b,a)  (((a&0xFF)<<24)+((r&0xFF)<<16)+((g&0xFF)<<8)+(b&0xFF))
 #define INT2COLOR(i)    {RED(i),GREEN(i),BLUE(i),ALPHA(i)}
-void drawEmoji(GFX* pGfx, int x, int y, char* emoji, int color1, int color2, int color3){
+void drawEmoji(GFX* pGfx, int x, int y, unsigned short emojiCode, int backColor, int filterColor){
         SDL_Rect  textRect;
         SDL_Rect  rendRect;
         // TODO check params
+        
         // TODO check all function returns (below)
 
         // Set position and size for texture source
-        // TODO use a parameter inside GFX structure 
-        textRect.x = x*80;
-        textRect.y = y*80;
-        textRect.w = 80;
-        textRect.h = 80;
+        textRect.x = x*EMOJI_SIZE;
+        textRect.y = y*EMOJI_SIZE;
+        textRect.w =   EMOJI_SIZE;
+        textRect.h =   EMOJI_SIZE;
         // Set position and size for blitting
         rendRect.x = x*pGfx->pCanvas->charW;
         rendRect.y = y*pGfx->pCanvas->charH;
         rendRect.w =   pGfx->pCanvas->charW;
         rendRect.h =   pGfx->pCanvas->charH;
+        // Set color for background
+        SDL_SetRenderDrawColor(pGfx->pRenderer,
+                               RED(backColor),
+                               GREEN(backColor),
+                               BLUE(backColor),
+                               ALPHA(backColor)  );
         // Draw background
-        SDL_SetRenderDrawColor(pGfx->pRenderer, RED(color1),GREEN(color1),BLUE(color1),ALPHA(color1));
         SDL_RenderFillRect(pGfx->pRenderer, &rendRect);                
         // display Emoji on screen
         SDL_RenderCopy(pGfx->pRenderer, pGfx->pTexture, &textRect, &rendRect);

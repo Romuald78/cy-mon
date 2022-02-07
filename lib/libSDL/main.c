@@ -48,9 +48,6 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
         rageQuit(1002, "DRAW : GFX pointer is NULL !");
     }
    
-    unsigned int frontColor = 0xFFFFFF00;
-    unsigned int backColor  = 0xFFFF0000;
-    unsigned int cellColor  = 0xFFFF0000;
     UserData* pData = (UserData*)(pUserData);
 
     int T = 2000;
@@ -59,9 +56,9 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
         v = 510-v;
     }
 
-    for(int y=0;y<12;y++){
-        for(int x=0;x<20;x++){    
-            drawEmoji(pGfx, x, y, 0x0       , 0xFE000000 + (RGB(v,v,v)), backColor, cellColor);
+    for(int y=0;y<pCanvas->nbCharY;y++){
+        for(int x=0;x<pCanvas->nbCharX;x++){    
+            drawEmoji(pGfx, x, y, y*255 + x, 0xFF0000 + RGB(v,v,v), 0xFFFFFFFF);
         }
     }
 }

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import math
+import shutil
 
 from PIL import Image
 
@@ -327,8 +328,9 @@ def createAtlas(font1, font2, list1, list2):
 
     # Open C-header-file
     fp = open("emoji.h", "w")
-    fp.write("#ifndef EMOJI_H\n")
-    fp.write("  #define EMOJI_H\n")
+    fp.write( "#ifndef EMOJI_H\n")
+    fp.write( "  #define EMOJI_H\n\n")
+    fp.write(f"  #define EMOJI_SIZE {SIZE}\n\n")
     # For each item draw ...
     x = 0
     y = 0
@@ -367,11 +369,12 @@ def createAtlas(font1, font2, list1, list2):
             y += 1
 
     # Close file
-    fp.write("#endif // EMOJI_H \n")
+    fp.write("\n#endif // EMOJI_H \n")
     fp.close()
 
     im.show()
     im.save(f"emoji.png")
+
 
 
 
@@ -381,3 +384,8 @@ createAtlas(r"../GameRGR/fonts/DejaVuSansMono.ttf",
             getOthers(),
             getEmoji()
             )
+
+# Copy Header file + png atlas
+shutil.copyfile("./emoji.h"  , "../GameRGR/includes/emoji.h")
+shutil.copyfile("./emoji.png", "../GameRGR/fonts/emoji.png" )
+

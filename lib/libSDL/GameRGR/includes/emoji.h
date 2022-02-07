@@ -1,5 +1,8 @@
 #ifndef EMOJI_H
   #define EMOJI_H
+
+  #define EMOJI_SIZE 80
+
   #define BLANK (0x0)
   #define TREE1 (0x1)
   #define TREE2 (0x2)
@@ -271,4 +274,5 @@
   #define TEE_R (0xb0f)
   #define TEE_T (0xb10)
   #define TEE_B (0xb11)
+
 #endif // EMOJI_H 
