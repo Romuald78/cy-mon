@@ -76,17 +76,16 @@ Canvas* _newCanvas(int nbCharX, int nbCharY, int charW, int charH){
     return canvas;    
 }
 
-GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
+GFX* _newGFX(void* pWindow, void* pRenderer, Canvas* pCanvas){
     // Variables
     GFX* pGfx;
     SDL_Surface* pSurf;
     // Check parameters
-    if(pWindow==NULL || pFont==NULL || pRenderer==NULL || pCanvas==NULL){
+    if(pWindow==NULL || pRenderer==NULL || pCanvas==NULL){
         rageQuit(20, "CreateGFX null parameters !\n"
                      "pWindow  =%p\n"
-                     "pFont    =%p\n"
                      "pRenderer=%p\n"
-                     "pCanvas  =%p", pWindow, pFont, pRenderer, pCanvas);        
+                     "pCanvas  =%p", pWindow, pRenderer, pCanvas);        
     }
     // Allocate structure
     // Memory Allocation
@@ -97,11 +96,10 @@ GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
     }
     // Fill structure
     pGfx->pWindow   = pWindow;
-    pGfx->pFont     = pFont;
     pGfx->pRenderer = pRenderer;
     pGfx->pCanvas   = pCanvas;
     // Create texture with all emojis from bitmap file
-    pSurf = IMG_Load( "emoji.png" );
+    pSurf = IMG_Load( "./atlas/emoji.png" );
     if(pSurf==NULL){
         rageQuit(27, "Impossible to load emoji atlas !");
     }
@@ -116,39 +114,6 @@ GFX* _newGFX(void* pWindow, void* pFont, void* pRenderer, Canvas* pCanvas){
     // Return structure address
     return pGfx;        
 }
-
-/*
-Callbacks* _Callbacks( InitCallback init,
-                            EventCallback event,
-                            UpdateCallback update,
-                            DrawCallback draw,
-                            FinishCallback finish ){
-    // Variables
-    Callbacks* pCb;
-    // Check parameters
-    if(init==NULL || event==NULL || update==NULL || draw==NULL || finish==NULL){
-        rageQuit(30, "Create Callbacks null parameters !\n"
-                     "init  =%p\n"
-                     "event =%p\n"
-                     "update=%p\n"
-                     "draw  =%p\n"
-                     "finish=%p", init, event, update, draw, finish );
-    }
-    // Memory Allocation
-    pCb = malloc(sizeof(Callbacks));
-    if(pGfx==NULL){
-        rageQuit(35, "Callbacks allocation failed !");
-    }
-    // Fill structure
-    pCb->cbInit   = init;
-    pCb->cbEvent  = event;
-    pCb->cbUpdate = update;
-    pCb->cbDraw   = draw;
-    pCb->cbFinish = finish;
-    // Return structure address
-    return pCb;
-}
-//*/
 
 GameData* _newGame(GFX* pGfx, Callbacks* pCb, void* pUserData, int displayFPS){
     // Variables
@@ -177,7 +142,6 @@ GameData* _newGame(GFX* pGfx, Callbacks* pCb, void* pUserData, int displayFPS){
 GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUserData, Callbacks* pCb){    
     // Variables
     SDL_Window*   pWindow;
-    TTF_Font*     pFont;    
     SDL_Renderer* pRenderer;
     Canvas*       pCanvas;
     GFX*          pGfx;
@@ -198,10 +162,8 @@ GameData* createGame(int nbCharX, int nbCharY, int charW, int charH, void* pUser
     if( SDL_CreateWindowAndRenderer(nbCharX*charW, nbCharY*charH, 0, &pWindow, &pRenderer) < 0){
         rageQuit(110, "Creation of Window and Renderer failed !");
     }
-    // Load emoji font (do not test result, we will when creating GFX struct)
-    pFont = TTF_OpenFont("GameRGR/fonts/NotoColorEmoji.ttf", 32);
     // Create GFX structure
-    pGfx = _newGFX(pWindow, pFont, pRenderer, pCanvas);
+    pGfx = _newGFX(pWindow, pRenderer, pCanvas);
     // Create game structure
     pGame = _newGame(pGfx, pCb, pUserData, 0);
     // Return Game structure

@@ -61,7 +61,7 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
 
     for(int y=0;y<12;y++){
         for(int x=0;x<20;x++){    
-            drawEmoji(pGfx, x, y, EMOT_RABBIT       , 0xFE000000 + (RGB(v,v,v)), backColor, cellColor);
+            drawEmoji(pGfx, x, y, 0x0       , 0xFE000000 + (RGB(v,v,v)), backColor, cellColor);
         }
     }
 }

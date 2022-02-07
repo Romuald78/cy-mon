@@ -5,7 +5,7 @@
     // INCLUDES
     //------------------------------
     #include "keys.h"
-    #include "emoticons.h"
+    #include "emoji.h"
     
     //------------------------------
     // STRUCTURES AND CALLBACKS
@@ -20,7 +20,6 @@
     // GFX Structure
     typedef struct{
         void*   pWindow;      // store application window address
-        void*   pFont;        // store user font address
         void*   pRenderer;    // store gfx renderer address 
         void*   pTexture;     // Texture containing all emojis
         Canvas* pCanvas;  
