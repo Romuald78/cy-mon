@@ -1,7 +1,7 @@
 # --------------------------------
 # CONSTANTS
 # --------------------------------
-VERSION=1.0.0
+VERSION=1.0.1
 EXEC=launcher
 CC=gcc
 LIB=GameRGR
