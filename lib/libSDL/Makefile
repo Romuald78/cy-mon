@@ -1,7 +1,7 @@
 # --------------------------------
 # CONSTANTS
 # --------------------------------
-VERSION=1.0.1
+VERSION=1.0.2
 EXEC=launcher
 CC=gcc
 LIB=GameRGR
@@ -62,6 +62,7 @@ deploy: $(BINDIR)/$(EXEC)
 	@cp $(LIBDIR)/libSDL2-2.0.so.0.18.3      $(DELIVERDIR)/libs/libSDL2.so
 	@cp $(LIBDIR)/libSDL2_image-2.0.so.0.2.3 $(DELIVERDIR)/libs/libSDL2_image.so
 	@cp $(LIBDIR)/libSDL2_ttf-2.0.so.0.18.0  $(DELIVERDIR)/libs/libSDL2_ttf.so
+	@cp $(LIBDIR)/libjpeg.so.8.2.2           $(DELIVERDIR)/libs/libjpeg.so
 	@cp $(APIDIR)/* $(DELIVERDIR)/includes
 	@cp $(FONTDIR)/emoji.png $(DELIVERDIR)/atlas
 	@cp $(BINDIR)/$(EXEC) $(DELIVERDIR)/
@@ -69,6 +70,7 @@ deploy: $(BINDIR)/$(EXEC)
 	@ln -sr $(DELIVERDIR)/libs/libSDL2.so       $(DELIVERDIR)/libs/libSDL2-2.0.so.0
 	@ln -sr $(DELIVERDIR)/libs/libSDL2_ttf.so   $(DELIVERDIR)/libs/libSDL2_ttf-2.0.so.0
 	@ln -sr $(DELIVERDIR)/libs/libSDL2_image.so $(DELIVERDIR)/libs/libSDL2_image-2.0.so.0
+	@ln -sr $(DELIVERDIR)/libs/libjpeg.so       $(DELIVERDIR)/libs/libjpeg.so.8
 	@cd $(DELIVERDIR); \
 	  tar czpf "GameRGR-$(VERSION).tar" "./atlas" "./includes" "./libs"; \
 	  mv "GameRGR-$(VERSION).tar" ../../$(ARCHDIR)
