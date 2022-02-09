@@ -58,7 +58,13 @@ void draw(void* pUserData, Canvas* pCanvas, GFX* pGfx){
 
     for(int y=0;y<pCanvas->nbCharY;y++){
         for(int x=0;x<pCanvas->nbCharX;x++){    
-            drawEmoji(pGfx, x, y, y*255 + x, 0xFF0000 + RGB(v,v,v), 0xFFFFFFFF);
+            // Draw emojis with full opaque + lightning background
+            //drawEmoji(pGfx, x, y, y*255 + x, 0xFF000000 + RGB(v,v,v), COLOR_WHITE);
+            // Draw emojis with changing opacity + fixed gray background
+            //drawEmoji(pGfx, x, y, y*255 + x, 0xFF808080, RGB( (255*x)/pCanvas->nbCharX, (255*y)/pCanvas->nbCharY, 0xFF) + (v<<24));
+            
+            // Draw emojis with gradient background + fixed white filter color
+            drawEmoji(pGfx, x, y, y*255 + x, 0xFF000000 + RGB((255*x)/pCanvas->nbCharX,(255*y)/pCanvas->nbCharY,0x00), COLOR_WHITE);              
         }
     }
 }

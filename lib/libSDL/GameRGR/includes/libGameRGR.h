@@ -6,6 +6,12 @@
     //------------------------------
     #include "keys.h"
     #include "emoji.h"
+
+    //------------------------------
+    // CONSTANTS
+    //------------------------------
+    #define COLOR_WHITE 0xFFFFFFFF
+    #define COLOR_BLACK 0xFF000000
     
     //------------------------------
     // STRUCTURES AND CALLBACKS

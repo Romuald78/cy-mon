@@ -51,8 +51,15 @@ void drawEmoji(GFX* pGfx, int x, int y, unsigned short emojiCode, int backColor,
                                ALPHA(backColor)  );
         // Draw background
         SDL_RenderFillRect(pGfx->pRenderer, &rendRect);                
+
+        
+        // Set alpha on emoji texture
+        SDL_SetTextureAlphaMod(pGfx->pTexture, ALPHA(filterColor));
+        // Set color modifier (filter color)
+        SDL_SetTextureColorMod(pGfx->pTexture, RED(filterColor), GREEN(filterColor), BLUE(filterColor));
         // display Emoji on screen
         SDL_RenderCopy(pGfx->pRenderer, pGfx->pTexture, &textRect, &rendRect);
+        
 }
 
 
