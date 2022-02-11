@@ -57,6 +57,7 @@ $(BINDIR)/$(EXEC) : $(TARGET_SO) $(OBJ)
 	@echo "Generating Test Executable ..."
 	@rm -f -r $(BINDIR)
 	@mkdir $(BINDIR)	        
+	export LD_LIBRARY_PATH=$(LIBDIR) ; \
 	gcc -I$(APIDIR) $(OBJ) -L$(LIBDIR) -l$(LIB)-$(VERSION) -o $@
 #	@gcc -I$(APIDIR) $(OBJ) -L$(LIBDIR) -l$(LIB)-$(VERSION) -lSDL2 -lSDL2_ttf -lSDL2_image -o $@
 	@rm -f *.o
