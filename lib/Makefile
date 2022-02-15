@@ -1,7 +1,7 @@
 # --------------------------------
 # CONSTANTS
 # --------------------------------
-VERSION=1.0.7
+VERSION=1.0.8
 EXEC=launcher
 CC=gcc
 LIB=GameRGR
@@ -102,28 +102,28 @@ deploy: $(BINDIR)/$(EXEC)
 	@cp $(LIBDIR)/libz.so.1.2.11                $(DELIVERDIR)/libs/
 	@cp $(LIBDIR)/libzstd.so.1.4.4              $(DELIVERDIR)/libs/
 
-	@ln -sr $(DELIVERDIR)/ld-2.31.so                 $(DELIVERDIR)/ld-linux-x86-64.so.2
-	@ln -sr $(DELIVERDIR)/libc-2.31.so               $(DELIVERDIR)/libc.so.6
-	@ln -sr $(DELIVERDIR)/libdl-2.31.so              $(DELIVERDIR)/libdl.so.2
-	@ln -sr $(DELIVERDIR)/libjpeg.so.8.2.2           $(DELIVERDIR)/libjpeg.so
-	@ln -sr $(DELIVERDIR)/libjpeg.so.8.2.2           $(DELIVERDIR)/libjpeg.so.8
-	@ln -sr $(DELIVERDIR)/liblzma.so.5.2.4           $(DELIVERDIR)/liblzma.so.5
-	@ln -sr $(DELIVERDIR)/libm-2.31.so               $(DELIVERDIR)/libm.so.6
-	@ln -sr $(DELIVERDIR)/libpng16.so.16.37.0        $(DELIVERDIR)/libpng16.so.16
-	@ln -sr $(DELIVERDIR)/libpthread-2.31.so         $(DELIVERDIR)/libpthread.so.0
-	@ln -sr $(DELIVERDIR)/libSDL2-2.0.so.0.18.3      $(DELIVERDIR)/libSDL2-2.0.so.0
-	@ln -sr $(DELIVERDIR)/libSDL2_image-2.0.so.0.2.3 $(DELIVERDIR)/libSDL2_image-2.0.so.0
-	@ln -sr $(DELIVERDIR)/libSDL2_image-2.0.so.0.2.3 $(DELIVERDIR)/libSDL2_image.so
-	@ln -sr $(DELIVERDIR)/libSDL2-2.0.so.0.18.3      $(DELIVERDIR)/libSDL2.so
-	@ln -sr $(DELIVERDIR)/libSDL2_ttf-2.0.so.0.18.0  $(DELIVERDIR)/libSDL2_ttf-2.0.so.0
-	@ln -sr $(DELIVERDIR)/libSDL2_ttf-2.0.so.0.18.0  $(DELIVERDIR)/libSDL2_ttf.so
-	@ln -sr $(DELIVERDIR)/libtiff.so.5.5.0           $(DELIVERDIR)/libtiff.so.5
-	@ln -sr $(DELIVERDIR)/libwebp.so.6.0.2           $(DELIVERDIR)/libwebp.so.6
-	@ln -sr $(DELIVERDIR)/libz.so.1.2.11             $(DELIVERDIR)/libz.so.1
-	@ln -sr $(DELIVERDIR)/libzstd.so.1.4.4           $(DELIVERDIR)/libzstd.so.1
+	@ln -sr $(DELIVERDIR)/libs/ld-2.31.so                 $(DELIVERDIR)/libs/ld-linux-x86-64.so.2
+	@ln -sr $(DELIVERDIR)/libs/libc-2.31.so               $(DELIVERDIR)/libs/libc.so.6
+	@ln -sr $(DELIVERDIR)/libs/libdl-2.31.so              $(DELIVERDIR)/libs/libdl.so.2
+	@ln -sr $(DELIVERDIR)/libs/libjpeg.so.8.2.2           $(DELIVERDIR)/libs/libjpeg.so
+	@ln -sr $(DELIVERDIR)/libs/libjpeg.so.8.2.2           $(DELIVERDIR)/libs/libjpeg.so.8
+	@ln -sr $(DELIVERDIR)/libs/liblzma.so.5.2.4           $(DELIVERDIR)/libs/liblzma.so.5
+	@ln -sr $(DELIVERDIR)/libs/libm-2.31.so               $(DELIVERDIR)/libs/libm.so.6
+	@ln -sr $(DELIVERDIR)/libs/libpng16.so.16.37.0        $(DELIVERDIR)/libs/libpng16.so.16
+	@ln -sr $(DELIVERDIR)/libs/libpthread-2.31.so         $(DELIVERDIR)/libs/libpthread.so.0
+	@ln -sr $(DELIVERDIR)/libs/libSDL2-2.0.so.0.18.3      $(DELIVERDIR)/libs/libSDL2-2.0.so.0
+	@ln -sr $(DELIVERDIR)/libs/libSDL2_image-2.0.so.0.2.3 $(DELIVERDIR)/libs/libSDL2_image-2.0.so.0
+	@ln -sr $(DELIVERDIR)/libs/libSDL2_image-2.0.so.0.2.3 $(DELIVERDIR)/libs/libSDL2_image.so
+	@ln -sr $(DELIVERDIR)/libs/libSDL2-2.0.so.0.18.3      $(DELIVERDIR)/libs/libSDL2.so
+	@ln -sr $(DELIVERDIR)/libs/libSDL2_ttf-2.0.so.0.18.0  $(DELIVERDIR)/libs/libSDL2_ttf-2.0.so.0
+	@ln -sr $(DELIVERDIR)/libs/libSDL2_ttf-2.0.so.0.18.0  $(DELIVERDIR)/libs/libSDL2_ttf.so
+	@ln -sr $(DELIVERDIR)/libs/libtiff.so.5.5.0           $(DELIVERDIR)/libs/libtiff.so.5
+	@ln -sr $(DELIVERDIR)/libs/libwebp.so.6.0.2           $(DELIVERDIR)/libs/libwebp.so.6
+	@ln -sr $(DELIVERDIR)/libs/libz.so.1.2.11             $(DELIVERDIR)/libs/libz.so.1
+	@ln -sr $(DELIVERDIR)/libs/libzstd.so.1.4.4           $(DELIVERDIR)/libs/libzstd.so.1
 
-	@cd $(DELIVERDIR); \
-	  tar czpf "GameRGR-$(VERSION).tar" "./atlas" "./includes" "./libs"; \
+	cd $(DELIVERDIR); \
+	  tar -czpf "GameRGR-$(VERSION).tar" "atlas" "includes" "libs" "$(EXEC)"; \
 	  mv "GameRGR-$(VERSION).tar" ../../$(ARCHDIR)
         
 # -----------------------------
